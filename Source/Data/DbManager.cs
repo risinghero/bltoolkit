@@ -33,17 +33,17 @@ namespace BLToolkit.Data
 	/// </remarks>
 	/// <include file="Examples.xml" path='examples/db[@name="DbManager"]/*' />
 	[DesignerCategory(@"Code")]
-	public partial class DbManager: Component
+	public partial class DbManager : Component
 	{
 		#region Init
 
 		public DbManager(DataProviderBase dataProvider, string connectionString)
 		{
-			if (dataProvider     == null) throw new ArgumentNullException("dataProvider");
+			if (dataProvider == null) throw new ArgumentNullException("dataProvider");
 			if (connectionString == null) throw new ArgumentNullException("connectionString");
 
 			_dataProvider = dataProvider;
-			_connection   = dataProvider.CreateConnectionObject();
+			_connection = dataProvider.CreateConnectionObject();
 
 			_connection.ConnectionString = connectionString;
 
@@ -53,10 +53,10 @@ namespace BLToolkit.Data
 		public DbManager(DataProviderBase dataProvider, IDbConnection connection)
 		{
 			if (dataProvider == null) throw new ArgumentNullException("dataProvider");
-			if (connection   == null) throw new ArgumentNullException("connection");
+			if (connection == null) throw new ArgumentNullException("connection");
 
 			_dataProvider = dataProvider;
-			_connection   = connection;
+			_connection = connection;
 
 			_dataProvider.InitDbManager(this);
 		}
@@ -64,11 +64,11 @@ namespace BLToolkit.Data
 		public DbManager(DataProviderBase dataProvider, IDbTransaction transaction)
 		{
 			if (dataProvider == null) throw new ArgumentNullException("dataProvider");
-			if (transaction  == null) throw new ArgumentNullException("transaction");
+			if (transaction == null) throw new ArgumentNullException("transaction");
 
-			_dataProvider     = dataProvider;
-			_connection       = transaction.Connection;
-			_transaction      = transaction;
+			_dataProvider = dataProvider;
+			_connection = transaction.Connection;
+			_transaction = transaction;
 			_closeTransaction = false;
 
 			_dataProvider.InitDbManager(this);
@@ -84,8 +84,8 @@ namespace BLToolkit.Data
 				new DbManager(0)
 				{
 					_configurationString = _configurationString,
-					_dataProvider        = _dataProvider,
-					_mappingSchema       = _mappingSchema
+					_dataProvider = _dataProvider,
+					_mappingSchema = _mappingSchema
 				};
 
 			if (_connection != null)
@@ -127,20 +127,23 @@ namespace BLToolkit.Data
 		public DataProviderBase DataProvider
 		{
 			[DebuggerStepThrough]
-			get           { return _dataProvider;  }
+			get { return _dataProvider; }
 			protected set { _dataProvider = value; }
 		}
 
 		private static TraceSwitch _traceSwitch;
-		public  static TraceSwitch  TraceSwitch
+		public static TraceSwitch TraceSwitch
 		{
-			get { return _traceSwitch ?? (_traceSwitch = new TraceSwitch("DbManager", "DbManager trace switch",
+			get
+			{
+				return _traceSwitch ?? (_traceSwitch = new TraceSwitch("DbManager", "DbManager trace switch",
 #if DEBUG
 				"Warning"
 #else
 				"Off"
 #endif
-				)); }
+				));
+			}
 			set { _traceSwitch = value; }
 		}
 
@@ -149,25 +152,25 @@ namespace BLToolkit.Data
 			TraceSwitch = new TraceSwitch("DbManager", "DbManager trace switch", "Info");
 		}
 
-		public static Action<string,string> WriteTraceLine = (message, displayName) => Debug.WriteLine(message, displayName);
+		public static Action<string, string> WriteTraceLine = (message, displayName) => Debug.WriteLine(message, displayName);
 
-		private    bool _canRaiseEvents = true;
-		public new bool  CanRaiseEvents
+		private bool _canRaiseEvents = true;
+		public new bool CanRaiseEvents
 		{
 			get { return _canRaiseEvents && base.CanRaiseEvents; }
 			set { _canRaiseEvents = value; }
 		}
 
-        /// <summary>
-        /// Use plain text query instead of using command parameters
-        /// </summary>
-        public bool InlineParameters { get; set; }
+		/// <summary>
+		/// Use plain text query instead of using command parameters
+		/// </summary>
+		public bool InlineParameters { get; set; }
 
 		#endregion
 
 		#region Connection
 
-		private bool          _closeConnection;
+		private bool _closeConnection;
 		private IDbConnection _connection;
 		/// <summary>
 		/// Gets or sets the <see cref="IDbConnection"/> used by this instance of the <see cref="DbManager"/>.
@@ -200,7 +203,7 @@ namespace BLToolkit.Data
 				if (value.GetType() != _dataProvider.ConnectionType)
 					InitDataProvider(value);
 
-				_connection      = value;
+				_connection = value;
 				_closeConnection = false;
 			}
 		}
@@ -253,7 +256,7 @@ namespace BLToolkit.Data
 		}
 
 		private bool? _isMarsEnabled;
-		public  bool   IsMarsEnabled
+		public bool IsMarsEnabled
 		{
 			get
 			{
@@ -269,7 +272,7 @@ namespace BLToolkit.Data
 
 		#region Transactions
 
-		private bool           _closeTransaction = true;
+		private bool _closeTransaction = true;
 		private IDbTransaction _transaction;
 		/// <summary>
 		/// Gets the <see cref="IDbTransaction"/> used by this instance of the <see cref="DbManager"/>.
@@ -286,6 +289,7 @@ namespace BLToolkit.Data
 		{
 			[DebuggerStepThrough]
 			get { return _transaction; }
+			set { _transaction = value; }
 		}
 
 		/// <summary>
@@ -559,7 +563,7 @@ namespace BLToolkit.Data
 		/// </summary>
 		public event OperationTypeEventHandler BeforeOperation
 		{
-			add    { Events.AddHandler   (_eventBeforeOperation, value); }
+			add { Events.AddHandler(_eventBeforeOperation, value); }
 			remove { Events.RemoveHandler(_eventBeforeOperation, value); }
 		}
 
@@ -569,7 +573,7 @@ namespace BLToolkit.Data
 		/// </summary>
 		public event OperationTypeEventHandler AfterOperation
 		{
-			add    { Events.AddHandler   (_eventAfterOperation, value); }
+			add { Events.AddHandler(_eventAfterOperation, value); }
 			remove { Events.RemoveHandler(_eventAfterOperation, value); }
 		}
 
@@ -579,7 +583,7 @@ namespace BLToolkit.Data
 		/// </summary>
 		public event OperationExceptionEventHandler OperationException
 		{
-			add    { Events.AddHandler   (_eventOperationException, value); }
+			add { Events.AddHandler(_eventOperationException, value); }
 			remove { Events.RemoveHandler(_eventOperationException, value); }
 		}
 
@@ -589,7 +593,7 @@ namespace BLToolkit.Data
 		/// </summary>
 		public event OperationExceptionEventHandler OperationExceptionRetry
 		{
-			add    { Events.AddHandler(_eventOperationExceptionRetry, value); }
+			add { Events.AddHandler(_eventOperationExceptionRetry, value); }
 			remove { Events.RemoveHandler(_eventOperationExceptionRetry, value); }
 		}
 
@@ -599,7 +603,7 @@ namespace BLToolkit.Data
 		/// </summary>
 		public event InitCommandEventHandler InitCommand
 		{
-			add    { Events.AddHandler   (_eventInitCommand, value); }
+			add { Events.AddHandler(_eventInitCommand, value); }
 			remove { Events.RemoveHandler(_eventInitCommand, value); }
 		}
 
@@ -774,8 +778,8 @@ namespace BLToolkit.Data
 					}
 
 					if (found == false && (
-					                       spParam.Direction == ParameterDirection.Input || 
-					                       spParam.Direction == ParameterDirection.InputOutput))
+										   spParam.Direction == ParameterDirection.Input ||
+										   spParam.Direction == ParameterDirection.InputOutput))
 					{
 						if (TraceSwitch.TraceWarning)
 							WriteTraceLine(
@@ -848,7 +852,7 @@ namespace BLToolkit.Data
 			foreach (var o in parameters)
 				if (o is IDbDataParameter)
 				{
-					var p = (IDbDataParameter) o;
+					var p = (IDbDataParameter)o;
 
 					if (!hash.ContainsKey(p.ParameterName))
 					{
@@ -858,7 +862,7 @@ namespace BLToolkit.Data
 				}
 				else if (o is IDbDataParameter[])
 				{
-					foreach (var p in (IDbDataParameter[]) o)
+					foreach (var p in (IDbDataParameter[])o)
 						if (!hash.ContainsKey(p.ParameterName))
 						{
 							list.Add(p);
@@ -996,7 +1000,7 @@ namespace BLToolkit.Data
 					}
 				}
 			}
-		
+
 			return CloneParameters(cachedParameters);
 		}
 
@@ -1141,8 +1145,8 @@ namespace BLToolkit.Data
 
 					_dataProvider.SetParameterValue(
 						Parameter(name), value ?? DBNull.Value);
-//						value == null || mm.MapMemberInfo.Nullable && _mappingSchema.IsNull(value)?
-//						value == null || (mm.MapMemberInfo.Nullable && !TypeHelper.IsNullable(mm.MapMemberInfo.Type)  && _mappingSchema.IsNull(value))?
+					//						value == null || mm.MapMemberInfo.Nullable && _mappingSchema.IsNull(value)?
+					//						value == null || (mm.MapMemberInfo.Nullable && !TypeHelper.IsNullable(mm.MapMemberInfo.Type)  && _mappingSchema.IsNull(value))?
 					//DBNull.Value: value);
 				}
 			}
@@ -1197,21 +1201,21 @@ namespace BLToolkit.Data
 		/// <param name="commandParameters">An array of parameters to be added to the result array.</param>
 		/// <returns>An array of parameters.</returns>
 		public IDbDataParameter[] CreateParameters(
-			DataRow                   dataRow,
-			string[]                  outputParameters,
-			string[]                  inputOutputParameters,
-			string[]                  ignoreParameters,
+			DataRow dataRow,
+			string[] outputParameters,
+			string[] inputOutputParameters,
+			string[] ignoreParameters,
 			params IDbDataParameter[] commandParameters)
 		{
 			if (dataRow == null)
 				throw new ArgumentNullException("dataRow");
 
 			var paramList = new ArrayList();
-			IComparer comparer  = CaseInsensitiveComparer.Default;
+			IComparer comparer = CaseInsensitiveComparer.Default;
 
-			outputParameters      = (string[])SortArray(outputParameters,      comparer);
+			outputParameters = (string[])SortArray(outputParameters, comparer);
 			inputOutputParameters = (string[])SortArray(inputOutputParameters, comparer);
-			ignoreParameters      = (string[])SortArray(ignoreParameters,      comparer);
+			ignoreParameters = (string[])SortArray(ignoreParameters, comparer);
 
 			foreach (DataColumn c in dataRow.Table.Columns)
 			{
@@ -1225,7 +1229,7 @@ namespace BLToolkit.Data
 				var parameter =
 					c.AllowDBNull
 						? NullParameter(name, dataRow[c.ColumnName])
-						: Parameter    (name, dataRow[c.ColumnName]);
+						: Parameter(name, dataRow[c.ColumnName]);
 
 				if (outputParameters != null && Array.BinarySearch(outputParameters, c.ColumnName, comparer) >= 0)
 					parameter.Direction = ParameterDirection.Output;
@@ -1253,7 +1257,7 @@ namespace BLToolkit.Data
 		/// <param name="commandParameters">An array of parameters to be added to the result array.</param>
 		/// <returns>An array of parameters.</returns>
 		public IDbDataParameter[] CreateParameters(
-			object                    obj,
+			object obj,
 			params IDbDataParameter[] commandParameters)
 		{
 			return CreateParameters(obj, null, null, null, commandParameters);
@@ -1274,38 +1278,38 @@ namespace BLToolkit.Data
 		/// <param name="commandParameters">An array of parameters to be added to the result array.</param>
 		/// <returns>An array of parameters.</returns>
 		public IDbDataParameter[] CreateParameters(
-			object                    obj,
-			string[]                  outputParameters,
-			string[]                  inputOutputParameters,
-			string[]                  ignoreParameters,
+			object obj,
+			string[] outputParameters,
+			string[] inputOutputParameters,
+			string[] ignoreParameters,
 			params IDbDataParameter[] commandParameters)
 		{
 			if (obj == null)
 				throw new ArgumentNullException("obj");
 
-			var isType    = obj is Type;
-			var type      = isType? (Type)obj: obj.GetType();
-			var om        = _mappingSchema.GetObjectMapper(type);
+			var isType = obj is Type;
+			var type = isType ? (Type)obj : obj.GetType();
+			var om = _mappingSchema.GetObjectMapper(type);
 			var paramList = new ArrayList();
-			var comparer  = CaseInsensitiveComparer.Default;
+			var comparer = CaseInsensitiveComparer.Default;
 
-			outputParameters       = (string[])SortArray(outputParameters,      comparer);
-			inputOutputParameters  = (string[])SortArray(inputOutputParameters, comparer);
-			ignoreParameters       = (string[])SortArray(ignoreParameters,      comparer);
+			outputParameters = (string[])SortArray(outputParameters, comparer);
+			inputOutputParameters = (string[])SortArray(inputOutputParameters, comparer);
+			ignoreParameters = (string[])SortArray(ignoreParameters, comparer);
 
 			foreach (MemberMapper mm in om)
 			{
 				if (ignoreParameters != null && Array.BinarySearch(ignoreParameters, mm.Name, comparer) >= 0)
 					continue;
-				
-				var value = isType? null: mm.GetValue(obj);
-				var name  = _dataProvider.Convert(mm.Name, GetConvertTypeToParameter()).ToString();
+
+				var value = isType ? null : mm.GetValue(obj);
+				var name = _dataProvider.Convert(mm.Name, GetConvertTypeToParameter()).ToString();
 
 				var parameter =
 					value == null ?
 						NullParameter(name, value, mm.MapMemberInfo.NullValue) :
 						(mm.DbType != DbType.Object) ?
-							Parameter(name, value, mm.DbType):
+							Parameter(name, value, mm.DbType) :
 							Parameter(name, value);
 
 				if (outputParameters != null && Array.BinarySearch(outputParameters, mm.Name, comparer) >= 0)
@@ -1351,7 +1355,7 @@ namespace BLToolkit.Data
 						{
 							if (!returnValueMember.StartsWith("@") && dest is ObjectMapper)
 							{
-								var om = (ObjectMapper) dest;
+								var om = (ObjectMapper)dest;
 								var ma = om.TypeAccessor[returnValueMember];
 
 								if (ma != null)
@@ -1591,7 +1595,7 @@ namespace BLToolkit.Data
 		/// <returns>The <see cref="IDbDataParameter"/> object.</returns>
 		public IDbDataParameter InputOutputParameter(string parameterName, object value)
 		{
-			return Parameter(ParameterDirection.InputOutput,parameterName, value);
+			return Parameter(ParameterDirection.InputOutput, parameterName, value);
 		}
 
 		/// <summary>
@@ -1622,13 +1626,13 @@ namespace BLToolkit.Data
 		/// <returns>The <see cref="IDbDataParameter"/> object.</returns>
 		public IDbDataParameter Parameter(
 			ParameterDirection parameterDirection,
-			string             parameterName,
-			object             value)
+			string parameterName,
+			object value)
 		{
 			var parameter = _dataProvider.CreateParameterObject(Command);
 
 			parameter.ParameterName = parameterName;
-			parameter.Direction     = parameterDirection;
+			parameter.Direction = parameterDirection;
 
 			_dataProvider.SetParameterValue(parameter, value ?? DBNull.Value);
 
@@ -1650,15 +1654,15 @@ namespace BLToolkit.Data
 		/// <returns>The <see cref="IDbDataParameter"/> object.</returns>
 		public IDbDataParameter Parameter(
 			ParameterDirection parameterDirection,
-			string             parameterName,
-			object             value,
-			DbType             dbType)
+			string parameterName,
+			object value,
+			DbType dbType)
 		{
 			var parameter = _dataProvider.CreateParameterObject(Command);
 
 			parameter.ParameterName = parameterName;
-			parameter.Direction     = parameterDirection;
-			parameter.DbType        = _dataProvider.GetParameterDbType(dbType);
+			parameter.Direction = parameterDirection;
+			parameter.DbType = _dataProvider.GetParameterDbType(dbType);
 
 			_dataProvider.SetParameterValue(parameter, value ?? DBNull.Value);
 
@@ -1697,17 +1701,17 @@ namespace BLToolkit.Data
 		/// <returns>The <see cref="IDbDataParameter"/> object.</returns>
 		public IDbDataParameter Parameter(
 			ParameterDirection parameterDirection,
-			string             parameterName,
-			object             value,
-			DbType             dbType,
-			int                size)
+			string parameterName,
+			object value,
+			DbType dbType,
+			int size)
 		{
 			var parameter = _dataProvider.CreateParameterObject(Command);
 
 			parameter.ParameterName = parameterName;
-			parameter.Direction     = parameterDirection;
-			parameter.DbType        = dbType;
-			parameter.Size          = size;
+			parameter.Direction = parameterDirection;
+			parameter.DbType = dbType;
+			parameter.Size = size;
 
 			_dataProvider.SetParameterValue(parameter, value);
 
@@ -1729,16 +1733,16 @@ namespace BLToolkit.Data
 		/// <returns>The <see cref="IDbDataParameter"/> object.</returns>
 		public IDbDataParameter Parameter(
 			ParameterDirection parameterDirection,
-			string             parameterName,
-			object             value,
-			string             typeName)
+			string parameterName,
+			object value,
+			string typeName)
 		{
 			var parameter = _dataProvider.CreateParameterObject(Command);
 
 			parameter.ParameterName = parameterName;
-			parameter.Direction     = parameterDirection;
+			parameter.Direction = parameterDirection;
 			_dataProvider.SetUserDefinedType(parameter, typeName);
-			_dataProvider.SetParameterValue (parameter, value);
+			_dataProvider.SetParameterValue(parameter, value);
 
 			return parameter;
 		}
@@ -1756,7 +1760,7 @@ namespace BLToolkit.Data
 			string parameterName,
 			object value,
 			DbType dbType,
-			int    size)
+			int size)
 		{
 			return Parameter(ParameterDirection.Input, parameterName, value, dbType, size);
 		}
@@ -1774,14 +1778,14 @@ namespace BLToolkit.Data
 		/// <returns>The <see cref="IDbDataParameter"/> object.</returns>
 		public IDbDataParameter Parameter(
 			ParameterDirection parameterDirection,
-			string             parameterName,
-			DbType             dbType)
+			string parameterName,
+			DbType dbType)
 		{
 			var parameter = _dataProvider.CreateParameterObject(Command);
 
 			parameter.ParameterName = parameterName;
-			parameter.Direction     = parameterDirection;
-			parameter.DbType        = dbType;
+			parameter.Direction = parameterDirection;
+			parameter.DbType = dbType;
 
 			return parameter;
 		}
@@ -1802,14 +1806,14 @@ namespace BLToolkit.Data
 			ParameterDirection parameterDirection,
 			string parameterName,
 			DbType dbType,
-			int    size)
+			int size)
 		{
 			var parameter = _dataProvider.CreateParameterObject(Command);
 
 			parameter.ParameterName = parameterName;
-			parameter.Direction     = parameterDirection;
-			parameter.DbType        = dbType;
-			parameter.Size          = size;
+			parameter.Direction = parameterDirection;
+			parameter.DbType = dbType;
+			parameter.Size = size;
 
 			return parameter;
 		}
@@ -1830,12 +1834,12 @@ namespace BLToolkit.Data
 		public IDbDataParameter Parameter(
 			string parameterName,
 			DbType dbType,
-			int    size,
+			int size,
 			string sourceColumn)
 		{
 			var param = Parameter(ParameterDirection.Input, parameterName, dbType, size);
 
-			param.SourceColumn  = sourceColumn;
+			param.SourceColumn = sourceColumn;
 			param.SourceVersion = DataRowVersion.Current;
 
 			return param;
@@ -1860,7 +1864,7 @@ namespace BLToolkit.Data
 		{
 			var param = Parameter(ParameterDirection.Input, parameterName, dbType);
 
-			param.SourceColumn  = sourceColumn;
+			param.SourceColumn = sourceColumn;
 			param.SourceVersion = DataRowVersion.Current;
 
 			return param;
@@ -1883,13 +1887,13 @@ namespace BLToolkit.Data
 		public IDbDataParameter Parameter(
 			string parameterName,
 			DbType dbType,
-			int    size,
+			int size,
 			string sourceColumn,
 			DataRowVersion dataRowVersion)
 		{
 			var param = Parameter(ParameterDirection.Input, parameterName, dbType, size);
 
-			param.SourceColumn  = sourceColumn;
+			param.SourceColumn = sourceColumn;
 			param.SourceVersion = dataRowVersion;
 
 			return param;
@@ -1916,7 +1920,7 @@ namespace BLToolkit.Data
 		{
 			var param = Parameter(ParameterDirection.Input, parameterName, dbType);
 
-			param.SourceColumn  = sourceColumn;
+			param.SourceColumn = sourceColumn;
 			param.SourceVersion = dataRowVersion;
 
 			return param;
@@ -1925,7 +1929,7 @@ namespace BLToolkit.Data
 		public ConvertType GetConvertTypeToParameter()
 		{
 			return Command.CommandType == CommandType.StoredProcedure ?
-				ConvertType.NameToSprocParameter:
+				ConvertType.NameToSprocParameter :
 				ConvertType.NameToCommandParameter;
 		}
 
@@ -1970,7 +1974,7 @@ namespace BLToolkit.Data
 			switch (commandAction)
 			{
 				default:
-				//case CommandAction.Select:
+					//case CommandAction.Select:
 					return SelectCommand;
 				case CommandAction.Insert: return InsertCommand;
 				case CommandAction.Update: return UpdateCommand;
@@ -1984,10 +1988,10 @@ namespace BLToolkit.Data
 
 			switch (commandAction)
 			{
-				default                   : command = _selectCommand; break;
-				case CommandAction.Insert : command = _insertCommand; break;
-				case CommandAction.Update : command = _updateCommand; break;
-				case CommandAction.Delete : command = _deleteCommand; break;
+				default: command = _selectCommand; break;
+				case CommandAction.Insert: command = _insertCommand; break;
+				case CommandAction.Update: command = _updateCommand; break;
+				case CommandAction.Delete: command = _deleteCommand; break;
 			}
 
 			if (command != null && !DataProvider.CanReuseCommand(command, commandType))
@@ -1996,10 +2000,10 @@ namespace BLToolkit.Data
 
 				switch (commandAction)
 				{
-					default                   : _selectCommand = null; break;
-					case CommandAction.Insert : _insertCommand = null; break;
-					case CommandAction.Update : _updateCommand = null; break;
-					case CommandAction.Delete : _deleteCommand = null; break;
+					default: _selectCommand = null; break;
+					case CommandAction.Insert: _insertCommand = null; break;
+					case CommandAction.Update: _updateCommand = null; break;
+					case CommandAction.Delete: _deleteCommand = null; break;
 				}
 			}
 
@@ -2022,7 +2026,7 @@ namespace BLToolkit.Data
 			switch (commandAction)
 			{
 				default:
-				//case CommandAction.Select:
+					//case CommandAction.Select:
 					return _selectCommandParameters;
 				case CommandAction.Insert: return _insertCommandParameters;
 				case CommandAction.Update: return _updateCommandParameters;
@@ -2032,9 +2036,9 @@ namespace BLToolkit.Data
 
 		private DbManager SetCommand(
 			CommandAction commandAction,
-			CommandType   commandType,
-			string        commandText,
-			params        IDbDataParameter[] commandParameters)
+			CommandType commandType,
+			string commandText,
+			params IDbDataParameter[] commandParameters)
 		{
 			if (_executed)
 			{
@@ -2043,14 +2047,14 @@ namespace BLToolkit.Data
 			}
 
 			PrepareCommand(commandAction, commandType, commandText, commandParameters);
-			
+
 			return this;
 		}
 
 		private DbManager SetSpCommand(
-			CommandAction   commandAction,
-			string          spName,
-			bool            openNewConnectionToDiscoverParameters,
+			CommandAction commandAction,
+			string spName,
+			bool openNewConnectionToDiscoverParameters,
 			params object[] parameterValues)
 		{
 			return SetCommand(
@@ -2061,8 +2065,8 @@ namespace BLToolkit.Data
 		}
 
 		private DbManager SetSpCommand(
-			CommandAction   commandAction,
-			string          spName,
+			CommandAction commandAction,
+			string spName,
 			params object[] parameterValues)
 		{
 			return SetCommand(
@@ -2093,7 +2097,7 @@ namespace BLToolkit.Data
 		/// <returns>Current instance.</returns>
 		public DbManager SetCommand(
 			CommandType commandType,
-			string      commandText)
+			string commandText)
 		{
 			return SetCommand(CommandAction.Select, commandType, commandText, null);
 		}
@@ -2123,8 +2127,8 @@ namespace BLToolkit.Data
 		/// <returns>Current instance.</returns>
 		public DbManager SetCommand(
 			CommandType commandType,
-			string      commandText,
-			params      IDbDataParameter[] commandParameters)
+			string commandText,
+			params IDbDataParameter[] commandParameters)
 		{
 			return SetCommand(CommandAction.Select, commandType, commandText, commandParameters);
 		}
@@ -2149,7 +2153,7 @@ namespace BLToolkit.Data
 
 		public DbManager SetSpCommand(
 			string spName,
-			bool   openNewConnectionToDiscoverParameters,
+			bool openNewConnectionToDiscoverParameters,
 			params object[] parameterValues)
 		{
 			return SetSpCommand(CommandAction.Select, spName, openNewConnectionToDiscoverParameters, parameterValues);
@@ -2207,8 +2211,8 @@ namespace BLToolkit.Data
 		/// <returns>Current instance.</returns>
 		public DbManager SetInsertCommand(
 			CommandType commandType,
-			string      commandText,
-			params      IDbDataParameter[] commandParameters)
+			string commandText,
+			params IDbDataParameter[] commandParameters)
 		{
 			return SetCommand(
 				CommandAction.Insert, commandType, commandText, commandParameters);
@@ -2262,8 +2266,8 @@ namespace BLToolkit.Data
 		/// <returns>Current instance.</returns>
 		public DbManager SetUpdateCommand(
 			CommandType commandType,
-			string      commandText,
-			params      IDbDataParameter[] commandParameters)
+			string commandText,
+			params IDbDataParameter[] commandParameters)
 		{
 			return SetCommand(
 				CommandAction.Update, commandType, commandText, commandParameters);
@@ -2317,8 +2321,8 @@ namespace BLToolkit.Data
 		/// <returns>Current instance.</returns>
 		public DbManager SetDeleteCommand(
 			CommandType commandType,
-			string      commandText,
-			params      IDbDataParameter[] commandParameters)
+			string commandText,
+			params IDbDataParameter[] commandParameters)
 		{
 			return SetCommand(
 				CommandAction.Delete, commandType, commandText, commandParameters);
@@ -2349,9 +2353,9 @@ namespace BLToolkit.Data
 		#region Prepare
 
 		private void PrepareCommand(
-			CommandAction      commandAction,
-			CommandType        commandType,
-			string             commandText,
+			CommandAction commandAction,
+			CommandType commandType,
+			string commandText,
 			IDbDataParameter[] commandParameters)
 		{
 			DataProvider.PrepareCommand(ref commandType, ref commandText, ref commandParameters);
@@ -2360,7 +2364,7 @@ namespace BLToolkit.Data
 
 			var command = GetCommand(commandAction, commandType, commandText);
 
-			SetCommand          (commandAction, command);
+			SetCommand(commandAction, command);
 			SetCommandParameters(commandAction, commandParameters);
 
 			if (commandParameters != null)
@@ -2409,7 +2413,7 @@ namespace BLToolkit.Data
 
 						if (p.Size < len)
 						{
-							p.Size  = len;
+							p.Size = len;
 							prepare = true;
 						}
 						else
@@ -2425,11 +2429,11 @@ namespace BLToolkit.Data
 
 						if (p.Size < len)
 						{
-							p.Size  = len;
+							p.Size = len;
 							prepare = true;
 						}
 						else
-							p.Size  = p.Size;
+							p.Size = p.Size;
 					}
 					else if (p.Value is char[])
 					{
@@ -2437,11 +2441,11 @@ namespace BLToolkit.Data
 
 						if (p.Size < len)
 						{
-							p.Size  = len;
+							p.Size = len;
 							prepare = true;
 						}
 						else
-							p.Size  = p.Size;
+							p.Size = p.Size;
 					}
 					else if (p.Value is decimal)
 					{
@@ -2552,7 +2556,7 @@ namespace BLToolkit.Data
 					MapOutputParameters(o);
 				}
 			}
-		
+
 			return rowsTotal;
 		}
 
@@ -2604,7 +2608,7 @@ namespace BLToolkit.Data
 
 		public int ExecuteForEach<T>(int maxBatchSize, IEnumerable<T> collection)
 		{
-			var om  = _mappingSchema.GetObjectMapper(typeof(T));
+			var om = _mappingSchema.GetObjectMapper(typeof(T));
 			var mms = new List<MemberMapper>();
 
 			foreach (MemberMapper mm in om)
@@ -2634,26 +2638,26 @@ namespace BLToolkit.Data
 				Math.Max(
 					Math.Min(
 						Math.Max(
-							members.Length == 0? 1000 : _dataProvider.MaxParameters / members.Length,
+							members.Length == 0 ? 1000 : _dataProvider.MaxParameters / members.Length,
 							members.Length),
 						maxBatchSize),
 					1);
-			var baseSql          = SelectCommand.CommandText;
-			var paramName        = _dataProvider.Convert(".", ConvertType.NameToQueryParameter).ToString();
-			var rowsTotal        = 0;
-			var nRows            = 0;
-			var initParameters   = true;
+			var baseSql = SelectCommand.CommandText;
+			var paramName = _dataProvider.Convert(".", ConvertType.NameToQueryParameter).ToString();
+			var rowsTotal = 0;
+			var nRows = 0;
+			var initParameters = true;
 			var saveCanRaseEvent = _canRaiseEvents;
 
 			_canRaiseEvents = false;
 
-			var                sb             = new StringBuilder();
-			var                rowSql         = new List<int>(maxRows);
+			var sb = new StringBuilder();
+			var rowSql = new List<int>(maxRows);
 			IDbDataParameter[] baseParameters = null;
-			var                parameters     = new List<IDbDataParameter>();
-			var                hasValue       = new List<bool>();
+			var parameters = new List<IDbDataParameter>();
+			var hasValue = new List<bool>();
 
-			var  isPrepared = false;
+			var isPrepared = false;
 
 			foreach (var obj in collection)
 			{
@@ -2678,10 +2682,10 @@ namespace BLToolkit.Data
 
 				if (rowSql.Count < maxRows)
 				{
-// ReSharper disable AccessToModifiedClosure
-					Converter<IDbDataParameter,string> c1 = p => p.ParameterName + nRows;
-// ReSharper restore AccessToModifiedClosure
-					Converter<IDbDataParameter,string> c2 = p => p.ParameterName;
+					// ReSharper disable AccessToModifiedClosure
+					Converter<IDbDataParameter, string> c1 = p => p.ParameterName + nRows;
+					// ReSharper restore AccessToModifiedClosure
+					Converter<IDbDataParameter, string> c2 = p => p.ParameterName;
 
 					sb
 						.Append("\n")
@@ -2689,14 +2693,14 @@ namespace BLToolkit.Data
 							baseSql,
 							Array.ConvertAll(
 								baseParameters,
-								baseParameters.Length > 0 && baseParameters[0].ParameterName != paramName? c1 : c2));
+								baseParameters.Length > 0 && baseParameters[0].ParameterName != paramName ? c1 : c2));
 
 					rowSql.Add(sb.Length);
 
 					for (var i = 0; i < members.Length; i++)
 					{
-						var value  = members[i].GetValue(obj);
-						var type   = members[i].MemberAccessor.Type;
+						var value = members[i].GetValue(obj);
+						var type = members[i].MemberAccessor.Type;
 						var dbType = members[i].GetDbType();
 
 						IDbDataParameter p;
@@ -2732,7 +2736,7 @@ namespace BLToolkit.Data
 						{
 							isPrepared = false;
 
-							var type   = members[i].MemberAccessor.Type;
+							var type = members[i].MemberAccessor.Type;
 							var dbType = members[i].GetDbType();
 
 							if (value.GetType().IsEnum)
@@ -2745,7 +2749,7 @@ namespace BLToolkit.Data
 								p = Parameter(baseParameters[i].ParameterName + nRows, value ?? DBNull.Value/*, dbType*/);
 
 							parameters[n + i] = p;
-							hasValue  [n + i] = true;
+							hasValue[n + i] = true;
 						}
 						else
 						{
@@ -2755,9 +2759,9 @@ namespace BLToolkit.Data
 							_dataProvider.SetParameterValue(
 								parameters[n + i],
 								value ?? DBNull.Value);
-								//value == null || members[i].MapMemberInfo.Nullable && _mappingSchema.IsNull(value)
-								//	? DBNull.Value
-								//	: value);
+							//value == null || members[i].MapMemberInfo.Nullable && _mappingSchema.IsNull(value)
+							//	? DBNull.Value
+							//	: value);
 						}
 
 					}
@@ -2844,7 +2848,7 @@ namespace BLToolkit.Data
 					rowsTotal += ExecuteNonQueryInternal();
 				}
 			}
-		
+
 			return rowsTotal;
 		}
 
@@ -2951,7 +2955,7 @@ namespace BLToolkit.Data
 		/// from command parameters.</param>
 		/// <returns>The number of rows affected by the command.</returns>
 		public int ExecuteNonQuery(
-			string          returnValueMember,
+			string returnValueMember,
 			params object[] objects)
 		{
 			var rowsAffected = ExecuteNonQuery();
@@ -3247,8 +3251,8 @@ namespace BLToolkit.Data
 		/// <returns>Array list of values of the specified column of the every
 		/// row in the resultset.</returns>
 		public IList ExecuteScalarList(
-			IList                list,
-			Type                 type,
+			IList list,
+			Type type,
 			NameOrIndexParameter nameOrIndex)
 		{
 			if (list == null)
@@ -3325,7 +3329,7 @@ namespace BLToolkit.Data
 		/// <returns>Array list of values of the specified column of the every
 		/// row in the resultset.</returns>
 		public IList<T> ExecuteScalarList<T>(
-			IList<T>             list,
+			IList<T> list,
 			NameOrIndexParameter nameOrIndex)
 		{
 			if (list == null)
@@ -3405,7 +3409,7 @@ namespace BLToolkit.Data
 		///<returns>The loaded dictionary.</returns>
 		public IDictionary ExecuteScalarDictionary(
 			IDictionary dic,
-			NameOrIndexParameter keyField,   Type keyFieldType,
+			NameOrIndexParameter keyField, Type keyFieldType,
 			NameOrIndexParameter valueField, Type valueFieldType)
 		{
 			if (dic == null)
@@ -3423,13 +3427,13 @@ namespace BLToolkit.Data
 			{
 				if (dr.Read())
 				{
-					var keyIndex   = keyField.ByName   ? dr.GetOrdinal(keyField.Name)   : keyField.Index;
+					var keyIndex = keyField.ByName ? dr.GetOrdinal(keyField.Name) : keyField.Index;
 					var valueIndex = valueField.ByName ? dr.GetOrdinal(valueField.Name) : valueField.Index;
 
 					do
 					{
 						var value = dr[valueIndex];
-						var key   = dr[keyIndex];
+						var key = dr[keyIndex];
 
 						if (key == null || key.GetType() != keyFieldType)
 							key = key is DBNull ? null : _mappingSchema.ConvertChangeType(key, keyFieldType);
@@ -3458,7 +3462,7 @@ namespace BLToolkit.Data
 		///<param name="valueFieldType">The value type.</param>
 		///<returns>The loaded dictionary.</returns>
 		public Hashtable ExecuteScalarDictionary(
-			NameOrIndexParameter keyField,   Type keyFieldType,
+			NameOrIndexParameter keyField, Type keyFieldType,
 			NameOrIndexParameter valueField, Type valueFieldType)
 		{
 			var table = new Hashtable();
@@ -3480,20 +3484,20 @@ namespace BLToolkit.Data
 		///<param name="keyField">The column name/index to load keys.</param>
 		///<param name="valueField">The column name/index to load values.</param>
 		///<returns>The loaded dictionary.</returns>
-		public IDictionary<TKey,T> ExecuteScalarDictionary<TKey,T>(
-			IDictionary<TKey,T>  dic,
+		public IDictionary<TKey, T> ExecuteScalarDictionary<TKey, T>(
+			IDictionary<TKey, T> dic,
 			NameOrIndexParameter keyField,
 			NameOrIndexParameter valueField)
 		{
 			if (dic == null)
-				dic = new Dictionary<TKey,T>();
+				dic = new Dictionary<TKey, T>();
 
 			if (_prepared)
 				InitParameters(CommandAction.Select);
 
 			//object nullValue = _mappingSchema.GetNullValue(type);
 
-			var keyFieldType   = typeof(TKey);
+			var keyFieldType = typeof(TKey);
 			var valueFieldType = typeof(T);
 
 			using (var dr = ExecuteReaderInternal())
@@ -3513,7 +3517,7 @@ namespace BLToolkit.Data
 						if (value == null || value.GetType() != valueFieldType)
 							value = value is DBNull ? null : _mappingSchema.ConvertChangeType(value, valueFieldType);
 
-						dic.Add((TKey) key, (T) value);
+						dic.Add((TKey)key, (T)value);
 					} while (dr.Read());
 				}
 
@@ -3531,11 +3535,11 @@ namespace BLToolkit.Data
 		///<param name="keyField">The column name/index to load keys.</param>
 		///<param name="valueField">The column name/index to load values.</param>
 		///<returns>The loaded dictionary.</returns>
-		public Dictionary<TKey,T> ExecuteScalarDictionary<TKey,T>(
+		public Dictionary<TKey, T> ExecuteScalarDictionary<TKey, T>(
 			NameOrIndexParameter keyField,
 			NameOrIndexParameter valueField)
 		{
-			var dic = new Dictionary<TKey,T>();
+			var dic = new Dictionary<TKey, T>();
 
 			ExecuteScalarDictionary(dic, keyField, valueField);
 
@@ -3558,10 +3562,10 @@ namespace BLToolkit.Data
 		///<param name="valueFieldType">The value type.</param>
 		///<returns>The loaded dictionary.</returns>
 		public IDictionary ExecuteScalarDictionary(
-			IDictionary          dic,
-			MapIndex             index,
+			IDictionary dic,
+			MapIndex index,
 			NameOrIndexParameter valueField,
-			Type                 valueFieldType)
+			Type valueFieldType)
 		{
 			if (dic == null)
 				dic = new Hashtable();
@@ -3633,7 +3637,7 @@ namespace BLToolkit.Data
 		///<param name="index">The <see cref="MapIndex"/> of the key columns.</param>
 		///<param name="valueField">The column name/index to load values.</param>
 		///<returns>The loaded dictionary.</returns>
-		public IDictionary<CompoundValue,T> ExecuteScalarDictionary<T>(
+		public IDictionary<CompoundValue, T> ExecuteScalarDictionary<T>(
 			IDictionary<CompoundValue, T> dic, MapIndex index, NameOrIndexParameter valueField)
 		{
 			if (dic == null)
@@ -3654,8 +3658,8 @@ namespace BLToolkit.Data
 
 					for (var i = 0; i < keyIndex.Length; i++)
 						keyIndex[i] = index.Fields[i].ByName
-						              	? dr.GetOrdinal(index.Fields[i].Name)
-						              	: index.Fields[i].Index;
+										  ? dr.GetOrdinal(index.Fields[i].Name)
+										  : index.Fields[i].Index;
 
 					do
 					{
@@ -3669,7 +3673,7 @@ namespace BLToolkit.Data
 						for (var i = 0; i < keyIndex.Length; i++)
 							key[i] = dr[keyIndex[i]];
 
-						dic.Add(new CompoundValue(key), (T) value);
+						dic.Add(new CompoundValue(key), (T)value);
 					} while (dr.Read());
 				}
 
@@ -3686,10 +3690,10 @@ namespace BLToolkit.Data
 		///<param name="index">The <see cref="MapIndex"/> of the key columns.</param>
 		///<param name="valueField">The column name/index to load values.</param>
 		///<returns>The loaded dictionary.</returns>
-		public Dictionary<CompoundValue,T> ExecuteScalarDictionary<T>(
+		public Dictionary<CompoundValue, T> ExecuteScalarDictionary<T>(
 			MapIndex index, NameOrIndexParameter valueField)
 		{
-			var dic = new Dictionary<CompoundValue,T>();
+			var dic = new Dictionary<CompoundValue, T>();
 
 			ExecuteScalarDictionary(dic, index, valueField);
 
@@ -3779,7 +3783,7 @@ namespace BLToolkit.Data
 		/// <param name="table">The name or index of the populating table.</param>
 		/// <returns>The <see cref="DataSet"/>.</returns>
 		public DataSet ExecuteDataSet(
-			DataSet              dataSet,
+			DataSet dataSet,
 			NameOrIndexParameter table)
 		{
 			return ExecuteDataSet(dataSet, 0, 0, table);
@@ -3794,9 +3798,9 @@ namespace BLToolkit.Data
 		/// <param name="maxRecords">The maximum number of records to retrieve.</param>
 		/// <returns>The <see cref="DataSet"/>.</returns>
 		public DataSet ExecuteDataSet(
-			DataSet              dataSet,
-			int                  startRecord,
-			int                  maxRecords,
+			DataSet dataSet,
+			int startRecord,
+			int maxRecords,
 			NameOrIndexParameter table)
 		{
 			if (_prepared)
@@ -3862,8 +3866,8 @@ namespace BLToolkit.Data
 		/// <param name="tableList">The <see cref="System.Data.DataTable"/> objects
 		/// to fill from the data source.</param>
 		public void ExecuteDataTables(
-			int                startRecord,
-			int                maxRecords,
+			int startRecord,
+			int maxRecords,
 			params DataTable[] tableList)
 		{
 			if (tableList == null || tableList.Length == 0)
@@ -4091,7 +4095,7 @@ namespace BLToolkit.Data
 		/// <typeparam name="T">Type of an object.</typeparam>
 		/// <param name="list">The list of mapped business objects to populate.</param>
 		/// <returns>Populated list of mapped business objects.</returns>
-		public IList<T> ExecuteList<T>(IList<T> list) 
+		public IList<T> ExecuteList<T>(IList<T> list)
 		{
 			ExecuteListInternal(list, null);
 
@@ -4132,7 +4136,7 @@ namespace BLToolkit.Data
 		/// <param name="list">The list of mapped business objects to populate.</param>
 		/// <param name="parameters">Additional parameters passed to object constructor through <see cref="InitContext"/>.</param>
 		/// <returns>Populated list of mapped business objects.</returns>
-		public TList ExecuteList<TList,T>(TList list, params object[] parameters)
+		public TList ExecuteList<TList, T>(TList list, params object[] parameters)
 			where TList : IList<T>
 		{
 			ExecuteListInternal(list, typeof(T), parameters);
@@ -4147,7 +4151,7 @@ namespace BLToolkit.Data
 		/// <typeparam name="T">Type of an object.</typeparam>
 		/// <param name="parameters">Additional parameters passed to object constructor through <see cref="InitContext"/>.</param>
 		/// <returns>Populated list of mapped business objects.</returns>
-		public TList ExecuteList<TList,T>(params object[] parameters)
+		public TList ExecuteList<TList, T>(params object[] parameters)
 			where TList : IList<T>, new()
 		{
 			var list = new TList();
@@ -4172,8 +4176,8 @@ namespace BLToolkit.Data
 		/// <returns>An instance of the <see cref="Hashtable"/> class.</returns>
 		public Hashtable ExecuteDictionary(
 			NameOrIndexParameter keyField,
-			Type                 keyFieldType,
-			params object[]      parameters)
+			Type keyFieldType,
+			params object[] parameters)
 		{
 			var hash = new Hashtable();
 
@@ -4192,10 +4196,10 @@ namespace BLToolkit.Data
 		/// <param name="parameters">Any additional parameters passed to the constructor with <see cref="InitContext"/> parameter.</param>
 		/// <returns>An instance of the <see cref="IDictionary"/>.</returns>
 		public IDictionary ExecuteDictionary(
-			IDictionary          dictionary,
+			IDictionary dictionary,
 			NameOrIndexParameter keyField,
-			Type                 type,
-			params object[]      parameters)
+			Type type,
+			params object[] parameters)
 		{
 			if (dictionary == null)
 				dictionary = new Hashtable();
@@ -4217,7 +4221,7 @@ namespace BLToolkit.Data
 		/// <returns>An instance of the dictionary.</returns>
 		public Dictionary<TKey, TValue> ExecuteDictionary<TKey, TValue>(
 			NameOrIndexParameter keyField,
-			params object[]      parameters)
+			params object[] parameters)
 		{
 			var dictionary = new Dictionary<TKey, TValue>();
 
@@ -4235,8 +4239,8 @@ namespace BLToolkit.Data
 		/// <returns>An instance of the <see cref="IDictionary"/>.</returns>
 		public IDictionary<TKey, TValue> ExecuteDictionary<TKey, TValue>(
 			IDictionary<TKey, TValue> dictionary,
-			NameOrIndexParameter      keyField,
-			params object[]           parameters)
+			NameOrIndexParameter keyField,
+			params object[] parameters)
 		{
 			return ExecuteDictionary(dictionary, keyField, typeof(TValue), parameters);
 		}
@@ -4251,9 +4255,9 @@ namespace BLToolkit.Data
 		/// <returns>An instance of the <see cref="IDictionary"/>.</returns>
 		public IDictionary<TKey, TValue> ExecuteDictionary<TKey, TValue>(
 			IDictionary<TKey, TValue> dictionary,
-			NameOrIndexParameter      keyField,
-			Type                      destObjectType,
-			params object[]           parameters)
+			NameOrIndexParameter keyField,
+			Type destObjectType,
+			params object[] parameters)
 		{
 			if (dictionary == null)
 				dictionary = new Dictionary<TKey, TValue>();
@@ -4280,8 +4284,8 @@ namespace BLToolkit.Data
 		/// <param name="parameters">Any additional parameters passed to the constructor with <see cref="InitContext"/> parameter.</param>
 		/// <returns>An instance of the <see cref="Hashtable"/> class.</returns>
 		public Hashtable ExecuteDictionary(
-			MapIndex        index,
-			Type            type,
+			MapIndex index,
+			Type type,
 			params object[] parameters)
 		{
 			var hash = new Hashtable();
@@ -4301,9 +4305,9 @@ namespace BLToolkit.Data
 		/// <param name="parameters">Any additional parameters passed to the constructor with <see cref="InitContext"/> parameter.</param>
 		/// <returns>An instance of the <see cref="IDictionary"/>.</returns>
 		public IDictionary ExecuteDictionary(
-			IDictionary     dictionary,
-			MapIndex        index,
-			Type            type,
+			IDictionary dictionary,
+			MapIndex index,
+			Type type,
 			params object[] parameters)
 		{
 			if (dictionary == null)
@@ -4324,7 +4328,7 @@ namespace BLToolkit.Data
 		/// <param name="parameters">Any additional parameters passed to the constructor with <see cref="InitContext"/> parameter.</param>
 		/// <returns>An instance of the dictionary.</returns>
 		public Dictionary<CompoundValue, TValue> ExecuteDictionary<TValue>(
-			MapIndex        index,
+			MapIndex index,
 			params object[] parameters)
 		{
 			var dictionary = new Dictionary<CompoundValue, TValue>();
@@ -4344,8 +4348,8 @@ namespace BLToolkit.Data
 		/// <returns>An instance of the dictionary.</returns>
 		public IDictionary<CompoundValue, TValue> ExecuteDictionary<TValue>(
 			IDictionary<CompoundValue, TValue> dictionary,
-			MapIndex                           index,
-			params object[]                    parameters)
+			MapIndex index,
+			params object[] parameters)
 		{
 			return ExecuteDictionary(dictionary, index, typeof(TValue), parameters);
 		}
@@ -4361,9 +4365,9 @@ namespace BLToolkit.Data
 		/// <returns>An instance of the dictionary.</returns>
 		public IDictionary<CompoundValue, TValue> ExecuteDictionary<TValue>(
 			IDictionary<CompoundValue, TValue> dictionary,
-			MapIndex                           index,
-			Type                               destObjectType,
-			params object[]                    parameters)
+			MapIndex index,
+			Type destObjectType,
+			params object[] parameters)
 		{
 			if (dictionary == null)
 				dictionary = new Dictionary<CompoundValue, TValue>();
@@ -4453,7 +4457,7 @@ namespace BLToolkit.Data
 		/// <param name="table">The name or index of the source table to use for table mapping.</param>
 		/// <returns>The number of rows successfully updated from the <see cref="DataSet"/>.</returns>
 		public int Update(
-			DataSet              dataSet,
+			DataSet dataSet,
 			NameOrIndexParameter table)
 		{
 			if (dataSet == null)
@@ -4508,9 +4512,9 @@ namespace BLToolkit.Data
 					{
 						operation();
 					}
-					catch(Exception ex)
+					catch (Exception ex)
 					{
-						if(!HandleOperationExceptionRetry(operationType, ex))
+						if (!HandleOperationExceptionRetry(operationType, ex))
 							throw;
 						continue;
 					}
@@ -4518,7 +4522,7 @@ namespace BLToolkit.Data
 					break;
 				}
 
-				OnAfterOperation (operationType);
+				OnAfterOperation(operationType);
 			}
 			catch (Exception ex)
 			{
@@ -4555,7 +4559,7 @@ namespace BLToolkit.Data
 					break;
 				}
 
-				OnAfterOperation (operationType);
+				OnAfterOperation(operationType);
 			}
 			catch (Exception ex)
 			{
